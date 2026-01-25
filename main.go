@@ -220,7 +220,7 @@ func deleteProduk(w http.ResponseWriter, r *http.Request) {
 // @Produce json
 // @Success 200 {array} Category
 // @Failure 404 {string} string "Category belum ada"
-// @Router /api/category [get]
+// @Router /api/categories [get]
 func getAllCategory(w http.ResponseWriter, r *http.Request) {
 	if len(category) == 0 {
 		http.Error(w, "Category belum ada", http.StatusNotFound)
@@ -240,9 +240,9 @@ func getAllCategory(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} Category
 // @Failure 400 {string} string "Invalid Category ID"
 // @Failure 404 {string} string "Produk belum ada"
-// @Router /api/category/{id} [get]
+// @Router /api/categories/{id} [get]
 func getCategoryByID(w http.ResponseWriter, r *http.Request) {
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/category/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		http.Error(w, "Invalid Category ID", http.StatusBadRequest)
@@ -269,7 +269,7 @@ func getCategoryByID(w http.ResponseWriter, r *http.Request) {
 // @Param category body Category true "Category data"
 // @Success 201 {object} Category
 // @Failure 400 {string} string "Invalid request"
-// @Router /api/category [post]
+// @Router /api/categories [post]
 func addCategory(w http.ResponseWriter, r *http.Request) {
 	var newCategory Category
 	err := json.NewDecoder(r.Body).Decode(&newCategory)
@@ -298,10 +298,10 @@ func addCategory(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} Category
 // @Failure 400 {string} string "Invalid request/ID"
 // @Failure 404 {string} string "Produk tidak ditemukan"
-// @Router /api/category/{id} [put]
+// @Router /api/categories/{id} [put]
 func updateCategory(w http.ResponseWriter, r *http.Request) {
 	// get id from req
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/category/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 
 	// convert to int
 	id, err := strconv.Atoi(idStr)
@@ -341,10 +341,10 @@ func updateCategory(w http.ResponseWriter, r *http.Request) {
 // @Success 200 {object} map[string]string "message: category deleted"
 // @Failure 400 {string} string "Invalid Category ID"
 // @Failure 404 {string} string "Category tidak ditemukan"
-// @Router /api/category/{id} [delete]
+// @Router /api/categories/{id} [delete]
 func deleteCategory(w http.ResponseWriter, r *http.Request) {
 	// get id from req
-	idStr := strings.TrimPrefix(r.URL.Path, "/api/category/")
+	idStr := strings.TrimPrefix(r.URL.Path, "/api/categories/")
 
 	// convert to int
 	id, err := strconv.Atoi(idStr)
@@ -372,12 +372,10 @@ func deleteCategory(w http.ResponseWriter, r *http.Request) {
 
 func enableCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Mengizinkan semua origin (untuk keperluan belajar/development)
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-		// Menangani preflight request (OPTIONS)
 		if r.Method == "OPTIONS" {
 			w.WriteHeader(http.StatusOK)
 			return
@@ -395,6 +393,15 @@ func enableCORS(next http.Handler) http.Handler {
 // @schemes https http
 func main() {
 	http.Handle("/swagger/", httpSwagger.WrapHandler)
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "API Kasir - Belajar Golang CodeWithUmam",
+		})
+	})
+
+	// health check
 	http.HandleFunc("/health", health)
 
 	/*
@@ -429,7 +436,7 @@ func main() {
 	/*
 		===== Category Paths
 	*/
-	http.HandleFunc("/api/category", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/api/categories", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
 			addCategory(w, r)
@@ -441,7 +448,7 @@ func main() {
 		}
 	})
 
-	http.HandleFunc("/api/category/", func(w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/api/categories/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodGet:
 			getCategoryByID(w, r)

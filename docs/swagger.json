@@ -12,7 +12,7 @@
     },
     "host": "kasir-api-production-1064.up.railway.app",
     "paths": {
-        "/api/category": {
+        "/api/categories": {
             "get": {
                 "description": "Get list of all categories",
                 "produces": [
@@ -79,7 +79,7 @@
                 }
             }
         },
-        "/api/category/{id}": {
+        "/api/categories/{id}": {
             "get": {
                 "description": "Get details of a single category by its ID",
                 "produces": [

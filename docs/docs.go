@@ -15,7 +15,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/category": {
+        "/api/categories": {
             "get": {
                 "description": "Get list of all categories",
                 "produces": [
@@ -82,7 +82,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/category/{id}": {
+        "/api/categories/{id}": {
             "get": {
                 "description": "Get details of a single category by its ID",
                 "produces": [

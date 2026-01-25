@@ -33,7 +33,7 @@ info:
   title: Kasir API
   version: "1.0"
 paths:
-  /api/category:
+  /api/categories:
     get:
       description: Get list of all categories
       produces:
@@ -77,7 +77,7 @@ paths:
       summary: Add a new category
       tags:
       - Category
-  /api/category/{id}:
+  /api/categories/{id}:
     delete:
       description: Remove a category from the list by its ID
       parameters:
