@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   main.Category:
     properties:
@@ -27,7 +26,7 @@ definitions:
         example: 10
         type: integer
     type: object
-host: localhost:8080
+host: kasir-api-production-1064.up.railway.app
 info:
   contact: {}
   description: Ini adalah API untuk sistem kasir sederhana.
@@ -315,4 +314,7 @@ paths:
       summary: Check API Health
       tags:
       - General
+schemes:
+- https
+- http
 swagger: "2.0"

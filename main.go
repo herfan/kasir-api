@@ -52,7 +52,7 @@ func health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Conten-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{
 		"status":  "OK",
-		"message": "API running well!",
+		"message": "API version 1.0 running well! ",
 	})
 }
 
@@ -370,11 +370,29 @@ func deleteCategory(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Mengizinkan semua origin (untuk keperluan belajar/development)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Menangani preflight request (OPTIONS)
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+
 // @title Kasir API
 // @version 1.0
 // @description Ini adalah API untuk sistem kasir sederhana.
-// @host localhost:8080
-// @BasePath /
+// @host kasir-api-production-1064.up.railway.app
+// @BasePath
+// @schemes https http
 func main() {
 	http.Handle("/swagger/", httpSwagger.WrapHandler)
 	http.HandleFunc("/health", health)
@@ -437,8 +455,9 @@ func main() {
 		}
 	})
 
-	fmt.Println("Server running at localhost:8080")
-	err := http.ListenAndServe(":8080", nil)
+	fmt.Println("Server running at http://localhost:8080")
+	fmt.Println("Swagger UI available at http://localhost:8080/swagger/index.html")
+	err := http.ListenAndServe(":8080", enableCORS(http.DefaultServeMux))
 	if err != nil {
 		fmt.Println("Error starting server:", err)
 	}
