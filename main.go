@@ -14,7 +14,7 @@ import (
 
 // Produk represents the data for a product
 type Produk struct {
-	ID    int    `json:"id" example:"1"`
+	ID    int    `json:"id"`
 	Nama  string `json:"nama" example:"Kopi Gadjah"`
 	Harga int    `json:"harga" example:"2000"`
 	Stok  int    `json:"stok" example:"10"`
@@ -22,9 +22,9 @@ type Produk struct {
 
 // Category represents the data for a category
 type Category struct {
-	ID          int    `json:"id" example:"1"`
-	Name        string `json:"name" example:"Minuman"`
-	Description string `json:"description" example:"Pelepas dahaga"`
+	ID          int    `json:"id"`
+	Name        string `json:"name" example:"Kategori 1"`
+	Description string `json:"description" example:"Deskripsi Kategori 1"`
 }
 
 var produk = []Produk{

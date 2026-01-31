@@ -447,15 +447,14 @@ const docTemplate = `{
             "properties": {
                 "description": {
                     "type": "string",
-                    "example": "Pelepas dahaga"
+                    "example": "Deskripsi Kategori 1"
                 },
                 "id": {
-                    "type": "integer",
-                    "example": 1
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string",
-                    "example": "Minuman"
+                    "example": "Kategori 1"
                 }
             }
         },

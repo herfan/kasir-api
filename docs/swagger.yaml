@@ -2,13 +2,12 @@ definitions:
   main.Category:
     properties:
       description:
-        example: Pelepas dahaga
+        example: Deskripsi Kategori 1
         type: string
       id:
-        example: 1
         type: integer
       name:
-        example: Minuman
+        example: Kategori 1
         type: string
     type: object
   main.Produk:
