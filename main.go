@@ -181,6 +181,8 @@ func main() {
 		DBConn: viper.GetString("DB_CONN"),
 	}
 
+	fmt.Println("DBConn:" + config.DBConn)
+
 	// setup database
 	db, err := database.InitDB(config.DBConn)
 	if err != nil {
