@@ -198,13 +198,27 @@ func main() {
 	categoryHandler := handlers.NewCategoryHandler(categoryService)
 
 	// setup routes
-	http.HandleFunc("/api/produk", productHandler.HandleProducts)
 	http.HandleFunc("/api/produk/", productHandler.HandleProductByID)
+	http.HandleFunc("/api/produk", productHandler.HandleProducts)
 
-	http.HandleFunc("/api/categories", categoryHandler.HandleCategories)
 	http.HandleFunc("/api/categories/", categoryHandler.HandleCategoryByID)
+	http.HandleFunc("/api/categories", categoryHandler.HandleCategories)
+
+	transactionRepo := repositories.NewTransactionRepository(db)
+	transactionService := services.NewTransactionService(transactionRepo)
+	transactionHandler := handlers.NewTransactionHandler(transactionService)
+
+	// Menggunakan HandleCheckout agar pengecekan method POST dilakukan
+	// Tambahkan trailing slash agar lebih fleksibel dalam menangani request
+	http.HandleFunc("/api/checkout", transactionHandler.HandleCheckout)
+	http.HandleFunc("/api/report/hari-ini", transactionHandler.GetReport)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		// Jika path bukan root "/", kembalikan 404 agar tidak membingungkan
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{
 			"message": "API Kasir - Belajar Golang CodeWithUmam",
@@ -214,36 +228,9 @@ func main() {
 	// health check
 	http.HandleFunc("/health", health)
 
-	/*
-		http.HandleFunc("/api/categories", func(w http.ResponseWriter, r *http.Request) {
-			switch r.Method {
-			case http.MethodPost:
-				addCategory(w, r)
-			case http.MethodGet:
-				getAllCategory(w, r)
-
-			default:
-				http.Error(w, "Method not allowed", http.StatusBadRequest)
-			}
-		})
-
-		http.HandleFunc("/api/categories/", func(w http.ResponseWriter, r *http.Request) {
-			switch r.Method {
-			case http.MethodGet:
-				getCategoryByID(w, r)
-			case http.MethodPut:
-				updateCategory(w, r)
-			case http.MethodDelete:
-				deleteCategory(w, r)
-
-			default:
-				http.Error(w, "Method not allowed", http.StatusBadRequest)
-			}
-		})
-	*/
-
 	fmt.Println("Server running at http://localhost:" + config.Port)
-	errMsg := http.ListenAndServe(":"+config.Port, nil)
+	// Terapkan middleware CORS ke DefaultServeMux
+	errMsg := http.ListenAndServe(":"+config.Port, enableCORS(http.DefaultServeMux))
 	if errMsg != nil {
 		fmt.Println("Error starting server:", errMsg)
 	}
